@@ -14,32 +14,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.example.myapplication.ui.viewmodel.TableViewModel
+import com.example.myapplication.ui.viewmodel.HomeProxyViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: TableViewModel = hiltViewModel()
+    viewModel: HomeProxyViewModel = hiltViewModel()
 ) {
-    val tableState by viewModel.state.collectAsState()
+    val tableState by viewModel.tableState.collectAsState()
 
     val mesaNombre = tableState.nombreMesa ?: "N/A"
-
-    val isLoading = tableState.isLoading
-    val error = tableState.error
-
-    if (isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-        return
-    }
-
-    if (error != null) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(text = "Error de conexión: $error", color = MaterialTheme.colorScheme.error)
-        }
-        return
-    }
 
     Column(
         modifier = Modifier

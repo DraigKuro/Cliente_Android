@@ -1,62 +1,48 @@
 package com.example.myapplication.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.myapplication.data.repository.TableStatus
-import com.example.myapplication.domain.table.ConnectTableUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@HiltViewModel
-class TableViewModel @Inject constructor(
-    private val connectTableUseCase: ConnectTableUseCase
-) : ViewModel() {
+@Singleton
+class TableViewModel @Inject constructor() : ViewModel() {
 
     private val _state = MutableStateFlow(TableState())
     val state: StateFlow<TableState> = _state.asStateFlow()
 
-    fun connectTableByUid(uid: String) {
+    fun setTableConnected(uid: String, nombreMesa: String) {
+        Log.d("TableViewModel", "Mesa conectada! uid=$uid | nombreMesa='$nombreMesa'")
         _state.update {
-            it.copy(isLoading = true, error = null, nombreMesa = null)
+            it.copy(
+                uid = uid,
+                nombreMesa = nombreMesa,
+                isConnected = true
+            )
         }
+    }
 
-        viewModelScope.launch {
-            val status = connectTableUseCase(uid)
-
-            _state.update { currentState ->
-                when (status) {
-                    is TableStatus.Success -> {
-                        currentState.copy(
-                            nombreMesa = status.nombreMesa,
-                            isLoading = false,
-                            error = null
-                        )
-                    }
-                    TableStatus.Occupied -> {
-                        currentState.copy(
-                            isLoading = false,
-                            error = "La mesa ya está ocupada."
-                        )
-                    }
-                    TableStatus.ApiError -> {
-                        currentState.copy(
-                            isLoading = false,
-                            error = "Error de conexión o servidor. Intente de nuevo."
-                        )
-                    }
-                }
-            }
+    fun updateOrderSummary(totalItems: Int, totalPrice: Double) {
+        _state.update {
+            it.copy(
+                orderSummary = OrderSummary(totalItems, totalPrice)
+            )
         }
     }
 }
 
+data class OrderSummary(
+    val totalItems: Int = 0,
+    val totalPrice: Double = 0.0
+)
+
 data class TableState(
+    val isConnected: Boolean = false,
+    val uid: String? = null,
     val nombreMesa: String? = null,
-    val isLoading: Boolean = false,
-    val error: String? = null
+    val orderSummary: OrderSummary = OrderSummary()
 )

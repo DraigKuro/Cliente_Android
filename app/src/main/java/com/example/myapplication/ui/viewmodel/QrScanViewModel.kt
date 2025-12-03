@@ -2,6 +2,8 @@ package com.example.myapplication.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.data.repository.TableStatus
+import com.example.myapplication.domain.table.ConnectTableUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,9 +12,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QrScanViewModel @Inject constructor(
+    private val connectTableUseCase: ConnectTableUseCase,
     private val tableViewModel: TableViewModel
 ) : ViewModel() {
-
     private val ENABLE_MOCK = true
     private val MOCK_UID = "388a92f5-2dda-4577-90c8-6333aad41fa2"
 
@@ -36,40 +38,41 @@ class QrScanViewModel @Inject constructor(
     private fun connectTable(uid: String) {
         _uiState.value = QrScanState.Loading
 
-        tableViewModel.connectTableByUid(uid)
-
         viewModelScope.launch {
-            tableViewModel.state.collect { state ->
-                when {
-                    state.nombreMesa != null -> {
-                        _uiState.value = QrScanState.Success(state.nombreMesa)
-                    }
-                    state.error != null -> {
-                        _uiState.value = QrScanState.Error(state.error)
-                    }
+            val status = connectTableUseCase(uid)
+
+            when (status) {
+                is TableStatus.Success -> {
+                    tableViewModel.setTableConnected(uid, status.nombreMesa)
+                    _uiState.value = QrScanState.Success(status.nombreMesa)
                 }
+
+                TableStatus.Occupied -> QrScanState.Error("Esta mesa ya está ocupada.")
+                TableStatus.ApiError -> QrScanState.Error("Error del servidor.")
+
             }
         }
     }
 
-    // ============ Escáner real ============
-    /*
-    private lateinit var qrLauncher: ActivityResultLauncher<ScanOptions>
 
-    fun setQrLauncher(launcher: ActivityResultLauncher<ScanOptions>) {
-        qrLauncher = launcher
-    }
+// ============ Escáner real ============
+/*
+private lateinit var qrLauncher: ActivityResultLauncher<ScanOptions>
 
-    private fun launchRealQrScanner() {
-        qrLauncher.launch(
-            ScanOptions().apply {
-                setDesiredBarcodeFormats(ScanOptions.QR_CODE)
-                setPrompt("Apunta al código QR de la mesa")
-                setBeepEnabled(true)
-            }
-        )
-    }
-    */
+fun setQrLauncher(launcher: ActivityResultLauncher<ScanOptions>) {
+    qrLauncher = launcher
+}
+
+private fun launchRealQrScanner() {
+    qrLauncher.launch(
+        ScanOptions().apply {
+            setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+            setPrompt("Apunta al código QR de la mesa")
+            setBeepEnabled(true)
+        }
+    )
+}
+*/
 }
 
 sealed class QrScanState {
