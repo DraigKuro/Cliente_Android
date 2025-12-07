@@ -111,14 +111,11 @@ fun HomeScreen(
                 .padding(top = 16.dp, bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            Button(
+            FilledTonalButton(
                 onClick = { /* Llamar camarero */ },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                )
+                    .height(56.dp)
             ) {
                 Text("Llamar camarero", fontWeight = FontWeight.SemiBold)
             }
