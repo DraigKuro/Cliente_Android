@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.myapplication.ui.composable.screen.HomeScreen
-import com.example.myapplication.ui.composable.screen.menu.MenuScreen
-import com.example.myapplication.ui.composable.screen.CartScreen
+import com.example.myapplication.ui.view.HomeScreen
+import com.example.myapplication.ui.view.MenuScreen
+import com.example.myapplication.ui.view.CartScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {

@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.composable.screen.menu
+package com.example.myapplication.ui.composable.menu
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*

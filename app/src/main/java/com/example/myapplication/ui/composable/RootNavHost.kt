@@ -4,8 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.myapplication.ui.composable.screen.MainContentWithBottomBar
-import com.example.myapplication.ui.composable.screen.QrScanEntryScreen
+import com.example.myapplication.ui.view.QrScanEntryScreen
 
 private const val QR_ROUTE = "qr_scan_entry_route"
 private const val MAIN_CONTENT_ROUTE = "main_content_route"

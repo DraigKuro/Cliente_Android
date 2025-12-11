@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.composable.screen.menu
+package com.example.myapplication.ui.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.myapplication.data.model.ItemModel
+import com.example.myapplication.ui.composable.menu.CategoryBar
+import com.example.myapplication.ui.composable.menu.ItemDetailBottomSheet
+import com.example.myapplication.ui.composable.menu.UniversalItemCard
 import com.example.myapplication.ui.viewmodel.MenuViewModel
 import kotlinx.coroutines.launch
 

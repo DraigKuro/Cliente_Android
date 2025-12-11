@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.composable.screen
+package com.example.myapplication.ui.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
