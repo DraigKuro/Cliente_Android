@@ -16,11 +16,13 @@ import coil3.compose.AsyncImage
 import com.example.myapplication.BuildConfig
 import com.example.myapplication.data.model.ItemModel
 import com.example.myapplication.data.model.PromotionModel
+import com.example.myapplication.ui.viewmodel.CartViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemDetailBottomSheet(
     item: ItemModel,
+    cartViewModel: CartViewModel,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -31,7 +33,7 @@ fun ItemDetailBottomSheet(
     }
 
     var quantity by remember { mutableIntStateOf(1) }
-    var maxQuantity by remember { mutableIntStateOf(maxLimit) }
+    val maxQuantity by remember { mutableIntStateOf(maxLimit) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -99,7 +101,13 @@ fun ItemDetailBottomSheet(
                 Spacer(Modifier.width(16.dp))
 
                 Button(
-                    onClick = {},
+                    onClick = {
+                        cartViewModel.addItemToCart(
+                            item = item,
+                            cantidad = quantity
+                        )
+                        onDismiss()
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .height(56.dp)

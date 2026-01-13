@@ -2,6 +2,8 @@ package com.example.myapplication.ui.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -11,10 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.myapplication.ui.viewmodel.HomeProxyViewModel
+import com.example.myapplication.ui.viewmodel.OrderItem
 
 @Composable
 fun HomeScreen(
@@ -22,6 +26,8 @@ fun HomeScreen(
 ) {
     val tableState by viewModel.tableState.collectAsState()
 
+    val totalItems = tableState.confirmedOrders.sumOf { it.cantidad }
+    val totalPrice = tableState.confirmedOrders.sumOf { it.cantidad * it.precio }
     val mesaNombre = tableState.nombreMesa ?: "N/A"
 
     Column(
@@ -29,7 +35,6 @@ fun HomeScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -74,14 +79,14 @@ fun HomeScreen(
                 Column {
                     Text("Total a pagar", style = MaterialTheme.typography.labelLarge)
                     Text(
-                        text = "$ 0.00",
+                        text = "${String.format("%.2f", totalPrice)} €",
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
                 Text(
-                    text = "0 ítems",
+                    text = "$totalItems ítems",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -96,12 +101,25 @@ fun HomeScreen(
                 .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.surface)
         ) {
-            Text(
-                text = "Aquí irá la lista de ítems pedidos\n(LazyColumn con tarjetas)",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                modifier = Modifier.align(Alignment.Center)
-            )
+            if (tableState.confirmedOrders.isEmpty()) {
+                Text(
+                    text = "Aún no has pedido nada.\n¡Ve al menú para empezar!",
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(tableState.confirmedOrders) { item ->
+                        ConfirmedItemRow(item)
+                    }
+                }
+            }
         }
 
         Column(
@@ -129,5 +147,33 @@ fun HomeScreen(
                 Text("Pagar la cuenta", fontWeight = FontWeight.SemiBold)
             }
         }
+    }
+}
+
+@Composable
+fun ConfirmedItemRow(item: OrderItem) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = item.nombre,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                text = "Cantidad: ${item.cantidad}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Text(
+            text = "${String.format("%.2f", item.precio * item.cantidad)} €",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }

@@ -4,6 +4,7 @@ import com.example.myapplication.data.network.DishApiClient
 import com.example.myapplication.BuildConfig
 import com.example.myapplication.data.network.DrinkApiClient
 import com.example.myapplication.data.network.MenuApiClient
+import com.example.myapplication.data.network.OrderApiClient
 import com.example.myapplication.data.network.PromotionApiClient
 import com.example.myapplication.data.network.TableApiClient
 import dagger.Module
@@ -55,5 +56,11 @@ object NetworkModule {
     @Provides
     fun provideTableApiClient(retrofit: Retrofit): TableApiClient {
         return retrofit.create(TableApiClient::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideOrderApiClient(retrofit: Retrofit): OrderApiClient {
+        return retrofit.create(OrderApiClient::class.java)
     }
 }

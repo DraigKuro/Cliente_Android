@@ -14,11 +14,13 @@ import com.example.myapplication.ui.composable.menu.CategoryBar
 import com.example.myapplication.ui.composable.menu.ItemDetailBottomSheet
 import com.example.myapplication.ui.composable.menu.UniversalItemCard
 import com.example.myapplication.ui.viewmodel.MenuViewModel
+import com.example.myapplication.ui.viewmodel.HomeProxyViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun MenuScreen() {
     val viewModel: MenuViewModel = hiltViewModel()
+    val proxyViewModel: HomeProxyViewModel = hiltViewModel()
     val state by viewModel.state
     val data = state.data
 
@@ -141,6 +143,7 @@ fun MenuScreen() {
     selectedItem?.let { item ->
         ItemDetailBottomSheet(
             item = item,
+            cartViewModel = proxyViewModel.cartViewModel,
             onDismiss = { selectedItem = null }
         )
     }

@@ -1,6 +1,5 @@
 package com.example.myapplication.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +15,6 @@ class TableViewModel @Inject constructor() : ViewModel() {
     val state: StateFlow<TableState> = _state.asStateFlow()
 
     fun setTableConnected(uid: String, nombreMesa: String) {
-        Log.d("TableViewModel", "Mesa conectada! uid=$uid | nombreMesa='$nombreMesa'")
         _state.update {
             it.copy(
                 uid = uid,
@@ -26,23 +24,25 @@ class TableViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun updateOrderSummary(totalItems: Int, totalPrice: Double) {
-        _state.update {
-            it.copy(
-                orderSummary = OrderSummary(totalItems, totalPrice)
+    fun confirmOrder(items: List<OrderItem>) {
+        _state.update { currentState ->
+            currentState.copy(
+                confirmedOrders = currentState.confirmedOrders + items
             )
         }
     }
 }
 
-data class OrderSummary(
-    val totalItems: Int = 0,
-    val totalPrice: Double = 0.0
+data class OrderItem(
+    val id: String,
+    val nombre: String,
+    val cantidad: Int,
+    val precio: Double
 )
 
 data class TableState(
     val isConnected: Boolean = false,
     val uid: String? = null,
     val nombreMesa: String? = null,
-    val orderSummary: OrderSummary = OrderSummary()
+    val confirmedOrders: List<OrderItem> = emptyList()
 )

@@ -6,7 +6,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeProxyViewModel @Inject constructor(
-    tableViewModel: TableViewModel
+    tableViewModel: TableViewModel,
+    cartViewModel: CartViewModel
 ) : ViewModel() {
     val tableState = tableViewModel.state
+    val cartState = cartViewModel.state
+    val cartViewModel = cartViewModel
+    val tableViewModel = tableViewModel
 }
