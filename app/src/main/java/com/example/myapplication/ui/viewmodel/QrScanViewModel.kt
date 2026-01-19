@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.repository.TableStatus
 import com.example.myapplication.domain.table.ConnectTableUseCase
+import com.example.myapplication.ui.viewmodel.QrScanState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +17,7 @@ class QrScanViewModel @Inject constructor(
     private val tableViewModel: TableViewModel
 ) : ViewModel() {
     private val ENABLE_MOCK = true
-    private val MOCK_UID = "388a92f5-2dda-4577-90c8-6333aad41fa2"
+    private val MOCK_UID = "8dbe8983-8e27-400d-b6e6-d2231de783f8"
 
     private val _uiState = MutableStateFlow<QrScanState>(QrScanState.Idle)
     val uiState: StateFlow<QrScanState> = _uiState
@@ -44,12 +45,12 @@ class QrScanViewModel @Inject constructor(
             when (status) {
                 is TableStatus.Success -> {
                     tableViewModel.setTableConnected(uid, status.nombreMesa)
-                    _uiState.value = QrScanState.Success(status.nombreMesa)
+                    _uiState.value = Success(status.nombreMesa)
                 }
 
-                TableStatus.Occupied -> QrScanState.Error("Esta mesa ya está ocupada.")
-                TableStatus.ApiError -> QrScanState.Error("Error del servidor.")
-
+                TableStatus.Occupied -> Error("Esta mesa ya está ocupada.")
+                TableStatus.ApiError -> Error("Error del servidor.")
+                TableStatus.AlertSuccess -> TODO()
             }
         }
     }

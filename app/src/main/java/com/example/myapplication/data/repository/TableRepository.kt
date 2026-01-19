@@ -29,10 +29,29 @@ class TableRepository @Inject constructor(
             return TableStatus.ApiError
         }
     }
+
+    suspend fun callWaiter(uid: String): TableStatus {
+        return try {
+            val response = api.callWaiter(uid)
+            if (response.isSuccessful) TableStatus.AlertSuccess else TableStatus.ApiError
+        } catch (e: Exception) {
+            TableStatus.ApiError
+        }
+    }
+
+    suspend fun requestBill(uid: String): TableStatus {
+        return try {
+            val response = api.requestBill(uid)
+            if (response.isSuccessful) TableStatus.AlertSuccess else TableStatus.ApiError
+        } catch (e: Exception) {
+            TableStatus.ApiError
+        }
+    }
 }
 
 sealed class TableStatus {
     data class Success(val nombreMesa: String) : TableStatus()
     data object Occupied : TableStatus()
     data object ApiError : TableStatus()
+    data object AlertSuccess : TableStatus()
 }

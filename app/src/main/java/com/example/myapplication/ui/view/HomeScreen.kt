@@ -130,19 +130,21 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             FilledTonalButton(
-                onClick = { /* Llamar camarero */ },
+                onClick = { viewModel.tableViewModel.llamarCamarero() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(56.dp),
+                enabled = !tableState.isCallingWaiter
             ) {
                 Text("Llamar camarero", fontWeight = FontWeight.SemiBold)
             }
 
             FilledTonalButton(
-                onClick = { /* Pagar cuenta */ },
+                onClick = { viewModel.tableViewModel.pedirCuenta() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
+                    .height(56.dp),
+                enabled = !tableState.isRequestingBill
             ) {
                 Text("Pagar la cuenta", fontWeight = FontWeight.SemiBold)
             }
